@@ -31,7 +31,7 @@ const Scanner = () => {
       const name = decodedText;
       const timestamp = new Date().toISOString();
 
-      axios.post('/api/save', { name, timestamp })
+      axios.post('http://localhost:5000/api/save', { name, timestamp })
         .then(response => {
           console.log("Datos guardados:", response.data);
         })
