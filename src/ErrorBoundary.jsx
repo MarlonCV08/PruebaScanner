@@ -13,14 +13,14 @@ class ErrorBoundary extends React.Component {
   }
 
   componentDidCatch(error, errorInfo) {
-    // Puedes registrar el error en un servicio de reporte de errores
+    // Loguea los detalles del error
     console.error("Error capturado por ErrorBoundary:", error, errorInfo);
     this.setState({ errorInfo });
   }
 
   render() {
     if (this.state.hasError) {
-      // Puedes personalizar la interfaz de respaldo aquí
+      // Interfaz de respaldo
       return (
         <div style={{ padding: '20px', textAlign: 'center' }}>
           <h2>Algo salió mal.</h2>
@@ -33,7 +33,7 @@ class ErrorBoundary extends React.Component {
       );
     }
 
-    // Si no hay errores, renderiza los hijos normalmente
+    // Renderiza los hijos si no hay error
     return this.props.children; 
   }
 }

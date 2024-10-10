@@ -7,27 +7,27 @@ const Scanner = () => {
   const [scannedData, setScannedData] = useState('');
   const [error, setError] = useState(null);
   const html5QrCodeRef = useRef(null);
-  const isScanningRef = useRef(false); // Usamos useRef para evitar re-renderizados innecesarios
+  const isScanningRef = useRef(false); // Para evitar re-renderizados innecesarios
 
   useEffect(() => {
     const html5QrCode = new Html5Qrcode("reader");
     html5QrCodeRef.current = html5QrCode;
 
     const qrCodeSuccessCallback = (decodedText, decodedResult) => {
-      console.log(`QR Code detected: ${decodedText}`, decodedResult);
+      console.log(`QR Code detectado: ${decodedText}`, decodedResult);
       setScannedData(decodedText);
 
-      // Detener el escáner solo si está activo
+      // Detener el escáner si está activo
       if (isScanningRef.current) {
         html5QrCode.stop().then(() => {
-          console.log("QR Code scanning stopped.");
+          console.log("Escaneo de QR Code detenido.");
           isScanningRef.current = false;
         }).catch(err => {
-          console.error("Unable to stop scanning.", err);
+          console.error("No se pudo detener el escaneo.", err);
         });
       }
 
-      // Enviar los datos al backend
+      // Enviar datos al backend
       const name = decodedText;
       const timestamp = new Date().toISOString();
 
@@ -60,7 +60,7 @@ const Scanner = () => {
             qrCodeSuccessCallback,
             qrCodeErrorCallback
           );
-          console.log("QR Code scanning started.");
+          console.log("Escaneo de QR Code iniciado.");
           isScanningRef.current = true;
         } else {
           setError("No se encontraron cámaras.");
@@ -85,7 +85,7 @@ const Scanner = () => {
         });
       }
     };
-  }, []); // Empty dependency array to run once
+  }, []); // Array de dependencias vacío para ejecutar una vez
 
   return (
     <div>

@@ -3,7 +3,6 @@ import React from 'react';
 import Scanner from './Scanner';
 import QrCodeGenerator from './QrCodeGenerator';
 import ErrorBoundary from './ErrorBoundary';
-// Importa el Error Boundary
 
 const App = () => {
   return (
