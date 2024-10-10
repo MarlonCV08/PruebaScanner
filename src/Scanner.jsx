@@ -1,4 +1,4 @@
-// Scanner.js
+// Scanner.jsx
 import React, { useEffect, useRef, useState } from 'react';
 import { Html5Qrcode } from 'html5-qrcode';
 import axios from 'axios';
@@ -7,7 +7,7 @@ const Scanner = () => {
   const [scannedData, setScannedData] = useState('');
   const [error, setError] = useState(null);
   const html5QrCodeRef = useRef(null);
-  const isScanningRef = useRef(false); // Para evitar re-renderizados innecesarios
+  const isScanningRef = useRef(false);
 
   useEffect(() => {
     const html5QrCode = new Html5Qrcode("reader");
@@ -17,7 +17,6 @@ const Scanner = () => {
       console.log(`QR Code detectado: ${decodedText}`, decodedResult);
       setScannedData(decodedText);
 
-      // Detener el escáner si está activo
       if (isScanningRef.current) {
         html5QrCode.stop().then(() => {
           console.log("Escaneo de QR Code detenido.");
@@ -27,11 +26,12 @@ const Scanner = () => {
         });
       }
 
-      // Enviar datos al backend
       const name = decodedText;
       const timestamp = new Date().toISOString();
 
-      axios.post('http://localhost:5000/api/save', { name, timestamp })
+      const backendUrl = process.env.REACT_APP_BACKEND_URL || 'http://localhost:5000';
+
+      axios.post(`${backendUrl}/api/save`, { name, timestamp })
         .then(response => {
           console.log("Datos guardados:", response.data);
         })
@@ -41,11 +41,9 @@ const Scanner = () => {
     };
 
     const qrCodeErrorCallback = (errorMessage) => {
-      // Puedes manejar los errores de escaneo aquí si lo deseas
       console.warn(`Error de escaneo: ${errorMessage}`);
     };
 
-    // Función para iniciar el escáner
     const startScanner = async () => {
       try {
         const cameras = await Html5Qrcode.getCameras();
@@ -71,10 +69,8 @@ const Scanner = () => {
       }
     };
 
-    // Iniciar el escáner al montar el componente
     startScanner();
 
-    // Limpiar el escáner al desmontar el componente
     return () => {
       if (html5QrCodeRef.current && isScanningRef.current) {
         html5QrCodeRef.current.stop().then(() => {
@@ -85,7 +81,7 @@ const Scanner = () => {
         });
       }
     };
-  }, []); // Array de dependencias vacío para ejecutar una vez
+  }, []);
 
   return (
     <div>
