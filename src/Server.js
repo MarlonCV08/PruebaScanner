@@ -2,6 +2,7 @@
 import express from 'express';
 import bodyParser from 'body-parser';
 import cors from 'cors'; // Para manejar CORS si es necesario
+import { DB } from './DB.js';
 
 const app = express();
 const PORT = 5000;
@@ -17,18 +18,33 @@ app.use(bodyParser.json());
 
 // Ruta para guardar datos
 app.post('/api/save', (req, res) => {
+  console.log("Datos recibidos en el servidor:", req.body);
   const { name, timestamp } = req.body;
 
-  if (!name || !timestamp) {
-    return res.status(400).json({ message: 'Faltan campos requeridos.' });
-  }
-
-  // Aquí agregarías la lógica para guardar en la base de datos
-  console.log(`Nombre: ${name}, Hora: ${timestamp}`);
-
-  // Simulación de guardado exitoso
-  res.status(200).json({ message: 'Datos guardados con éxito' });
+  const sql = 'INSERT INTO escaneo (Nombre, Hora) VALUES (?, ?)';
+  DB.query(sql, [name, timestamp], (err) => {
+    if(err){
+      console.error('Error al ingresar datos a la db', err)
+      return;
+    }
+    // Aquí agregarías la lógica para guardar en la base de datos
+    console.log(`Nombre: ${name}, Hora: ${timestamp}`);
+    // Simulación de guardado exitoso
+    res.status(200).json({ message: 'Datos guardados con éxito' });
+  });
 });
+app.get('/api/show', (req, res)=>{
+  const sql = 'SELECT * FROM escaneo';
+  DB.query(sql, (err, results) => {
+    if(err){
+      console.error('Error al obtener datos de la db', err)
+      return res.status(500).send('Error al ejecutar la consulta')
+    }
+    res.json(results);
+  })
+})
+
+
 
 // Manejo de rutas no encontradas
 app.use((req, res) => {
